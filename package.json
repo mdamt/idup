@@ -5,33 +5,6 @@
   "engines" : {
     "node" : ">=0.8"
   },
-  "author": {
-    "name": "Strzelewicz Alexandre",
-    "email": "as@unitech.io",
-    "url": "http://pm2.io"
-  },
-  "contributors": [{
-    "name"  : "Alex Kocharin",
-    "email" : "alex@kocharin.ru"
-  },{
-    "name"  : "Xu Jingxin",
-    "email" : "sailxjx@gmail.com"
-  },{
-    "name" : "Ben Postlethwaite",
-    "email" : "post.ben.here@gmail.com"
-  },{
-    "name" : "Devo.ps",
-    "email" : "contact@devo.ps"
-  },{
-    "name"  : "Bret Copeland",
-    "email" : "bret@atlantisflight.org"
-  }, {
-    "name" : "John Hurliman",
-    "email" : "jhurliman@jhurliman.org"
-  }, {
-    "name" : "TruongSinh Tran-Nguyen",
-    "email" : "i@truongsinh.pro"
-  }],
   "homepage" : "https://github.com/mdamt/idup",
   "description": "Modern CLI process manager for Node apps with a builtin load-balancer",
   "main": "index.js",
