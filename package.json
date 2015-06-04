@@ -32,7 +32,7 @@
     "name" : "TruongSinh Tran-Nguyen",
     "email" : "i@truongsinh.pro"
   }],
-  "homepage" : "https://github.com/Unitech/pm2",
+  "homepage" : "https://github.com/mdamt/idup",
   "description": "Modern CLI process manager for Node apps with a builtin load-balancer",
   "main": "index.js",
   "scripts": {
@@ -43,8 +43,7 @@
     "fault tolerant",
     "sysadmin",
     "tools",
-    "pm2",
-    "node-pm2",
+    "idup",
     "monitoring",
     "process manager",
     "forever",
@@ -58,7 +57,7 @@
     "dev ops"
   ],
   "bin": {
-    "pm2": "./bin/pm2"
+    "idup": "./bin/idup"
   },
   "dependencies": {
     "commander"      : "2.1.0",

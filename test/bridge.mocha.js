@@ -1,32 +1,32 @@
 
-var Satan;
+var Bridge;
 var should = require('should');
 var assert = require('better-assert');
 var path = require('path');
 
-describe('Satan', function() {
+describe('Bridge', function() {
 
   after(function(done) {
-    Satan.killDaemon(function() {
+    Bridge.killDaemon(function() {
       setTimeout(done, 400);
     });
   });
 
   it('should auto instancy itself, fire event and kill daemon', function(done) {
-    Satan = require('../lib/Satan');
-    process.once('satan:client:ready', function() {
+    Bridge = require('../lib/Bridge');
+    process.once('bridge:client:ready', function() {
       console.log('Client ready');
-      Satan.killDaemon(function() {
+      Bridge.killDaemon(function() {
         done();
       });
     });
   });
 
   it('should start daemon', function(done) {
-    Satan.launchDaemon(function(err, child) {
+    Bridge.launchDaemon(function(err, child) {
       assert(err == null);
       assert(typeof child.pid == 'number');
-      Satan.pingDaemon(function(online) {
+      Bridge.pingDaemon(function(online) {
         console.log(online);
         assert(online == true);
         done();
@@ -35,20 +35,20 @@ describe('Satan', function() {
   });
 
   it('should have right properties', function() {
-    Satan.should.have.property('remoteWrapper');
-    Satan.should.have.property('onReady');
-    Satan.should.have.property('launchRPC');
-    Satan.should.have.property('executeRemote');
-    Satan.should.have.property('launchDaemon');
-    Satan.should.have.property('getExposedMethods');
-    Satan.should.have.property('pingDaemon');
-    Satan.should.have.property('killDaemon');
+    Bridge.should.have.property('remoteWrapper');
+    Bridge.should.have.property('onReady');
+    Bridge.should.have.property('launchRPC');
+    Bridge.should.have.property('executeRemote');
+    Bridge.should.have.property('launchDaemon');
+    Bridge.should.have.property('getExposedMethods');
+    Bridge.should.have.property('pingDaemon');
+    Bridge.should.have.property('killDaemon');
   });
 
 
   describe('DAEMON', function() {
     it('should have the right exposed methods via RPC', function(done) {
-      Satan.getExposedMethods(function(err, methods) {
+      Bridge.getExposedMethods(function(err, methods) {
         assert(err == null);
         methods.should.have.property('prepare');
         methods.should.have.property('getMonitorData');
@@ -62,21 +62,21 @@ describe('Satan', function() {
     });
 
     it('should get an empty process list', function(done) {
-      Satan.executeRemote('getMonitorData', {}, function(err, res) {
+      Bridge.executeRemote('getMonitorData', {}, function(err, res) {
         assert(res.length === 0);
         done();
       });
     });
 
     it('should get an empty process list from system data', function(done) {
-      Satan.executeRemote('getSystemData', {}, function(err, res) {
+      Bridge.executeRemote('getSystemData', {}, function(err, res) {
         assert(res.processes.length === 0);
         done();
       });
     });
 
     it('should launch a process', function(done) {
-      Satan.executeRemote('prepare', {
+      Bridge.executeRemote('prepare', {
         pm_exec_path    : path.resolve(process.cwd(), 'test/fixtures/echo.js'),
         pm_err_log_path : path.resolve(process.cwd(), 'test/errLog.log'),
         pm_out_log_path : path.resolve(process.cwd(), 'test/outLog.log'),
@@ -90,14 +90,14 @@ describe('Satan', function() {
     });
 
     it('should list 4 processes', function(done) {
-      Satan.executeRemote('getMonitorData', {}, function(err, res) {
+      Bridge.executeRemote('getMonitorData', {}, function(err, res) {
         assert(res.length === 4);
         done();
       });
     });
 
     it('should list 4 processes via system data', function(done) {
-      Satan.executeRemote('getSystemData', {}, function(err, res) {
+      Bridge.executeRemote('getSystemData', {}, function(err, res) {
         assert(res.processes.length === 4);
         done();
       });

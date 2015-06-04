@@ -1,6 +1,4 @@
-#!/bin/sh
-
-':' //; exec "`command -v nodejs || command -v node`" $PM2_NODE_OPTIONS "$0" "$@"
+#!/usr/bin/env node
 
 var commander = require('commander');
 var fs        = require('fs');
@@ -12,25 +10,26 @@ var cronJob   = require('cron').CronJob;
 var Monit     = require('../lib/Monit');
 var UX        = require('../lib/CliUx');
 var Log       = require('../lib/Log');
-var Satan     = require('../lib/Satan');
+var Bridge     = require('../lib/Bridge');
 var CLI       = require('../lib/CLI');
 var cst       = require('../constants.js');
 var pkg       = require('../package.json');
 
 commander.version(pkg.version)
-  .option('-v --verbose', 'Verbose level')
-  .option('-s --silent', 'Throw less messages', false)
-  .option('-f --force', 'Force actions')
-  .option('-n --name <name>', 'Set a <name> for script')
-  .option('-i --instances <number>', 'Launch [number] instances (for networked app)(load balanced)')
-  .option('-o --output <path>', 'Out log file output')
-  .option('-x --execute-command', 'Execute a program using fork system')
-  .option('--interpreter <interpreter>', 'The interpreter pm2 should use for executing app (bash, python...)')
-  .option('-e --error <path>', 'Error log file output')
-  .option('-p --pid <pid>', 'PID file')
-  .option('-u --user <username>', 'When generating startup script defined the username')
-  .option('-c --cron <cron_pattern>', 'Restart a running process based on a cron pattern')
-  .option('-w --write', 'Write configuration in local folder')
+  .option('-v --verbose', 'verbose level')
+  .option('-s --silent', 'throw less messages', false)
+  .option('-m --mini-list', 'display a compacted list without formatting')
+  .option('-f --force', 'force actions')
+  .option('-n --name <name>', 'set a <name> for script')
+  .option('-i --instances <number>', 'launch [number] instances (for networked app)(load balanced)')
+  .option('-o --output <path>', 'specify out log file')
+  .option('-e --error <path>', 'specify error log file')
+  .option('-p --pid <pid>', 'specify pid file')
+  .option('-x --execute-command', 'execute a program using fork system')
+  .option('-u --user <username>', 'define user when generating startup script')
+  .option('-c --cron <cron_pattern>', 'restart a running process based on a cron pattern')
+  .option('-w --write', 'write configuration in local folder')
+  .option('--interpreter <interpreter>', 'the interpreter idup should use for executing app (bash, python...)')
   .usage('[cmd] app');
 
 //
@@ -48,26 +47,61 @@ commander.command('start <script>')
 //
 // Stop specific id
 //
-commander.command('stop <pm2_id|name|all>')
-  .description('stop specific process pm2 id or script name (set with --name or script name)')
-  .action(function(pm2_id) {
+commander.command('stop <idup_id|name|all>')
+  .description('stop specific process idup id or script name (set with --name or script name)')
+  .action(function(idup_id) {
     UX.processing.start();
 
-    if (pm2_id == 'all')
+    if (idup_id == 'all')
       CLI.stopAll();
-    else if (isNaN(parseInt(pm2_id))) {
-      CLI.stopProcessName(pm2_id);
+    else if (isNaN(parseInt(idup_id))) {
+      CLI.stopProcessName(idup_id);
     } else {
-      console.log(cst.PREFIX_MSG + 'Stopping process by id ' + pm2_id);
-      CLI.stopId(pm2_id);
+      console.log(cst.PREFIX_MSG + 'Stopping process by id ' + idup_id);
+      CLI.stopId(idup_id);
+    }
+  });
+
+//
+// Send system signal to process
+//
+commander.command('sendSignal <signal> <idup_id|name>')
+  .description('stop specific process idup id or script name (set with --name or script name)')
+  .action(function(signal, idup_id) {
+    UX.processing.start();
+
+    if (isNaN(parseInt(idup_id))) {
+      console.log(cst.PREFIX_MSG + 'Sending signal to process name ' + idup_id);
+      CLI.sendSignalToProcessName(signal, idup_id);
+    } else {
+      console.log(cst.PREFIX_MSG + 'Sending signal to process id ' + idup_id);
+      CLI.sendSignalToProcessId(signal, idup_id);
     }
   });
 
 //
 // Stop and delete a process by name from database
 //
+commander.command('ping')
+  .description('ping idup daemon - if not up it will launch it')
+  .action(CLI.ping);
+
+//
+// Interact
+//
+commander.command('interact <secret_key> <machine_name>')
+  .description('launch interaction daemon')
+  .action(CLI.interact);
+
+commander.command('killInteract')
+  .description('launch interaction daemon')
+  .action(CLI.interactKill);
+
+//
+// Stop and delete a process by name from database
+//
 commander.command('delete <name|id|script|all>')
-  .description('Stop and delete a process by name from PM2 database')
+  .description('stop and delete a process by name from idup database')
   .action(function(name) {
     CLI.deleteProcess(name);
   });
@@ -107,35 +141,51 @@ commander.command('resurrect')
 //
 // Stop All processes
 //
-commander.command('restart <pm2_id|name|all>')
-  .description('restart specific process pm2 id')
-  .action(function(pm2_id) {
+commander.command('restart <idup_id|name|all>')
+  .description('restart specific process idup id')
+  .action(function(idup_id) {
     UX.processing.start();
 
-    if (pm2_id == 'all') {
+    if (idup_id == 'all') {
       CLI.restartAll();
     }
-    else if (isNaN(parseInt(pm2_id))) {
-      console.log(cst.PREFIX_MSG + 'Restarting process by name ' + pm2_id);
-      CLI.restartProcessByName(pm2_id);
+    else if (isNaN(parseInt(idup_id))) {
+      console.log(cst.PREFIX_MSG + 'Restarting process by name ' + idup_id);
+      CLI.restartProcessByName(idup_id);
     } else {
-      console.log(cst.PREFIX_MSG + 'Restarting process by id ' + pm2_id);
-      CLI.restartProcessById(pm2_id);
+      console.log(cst.PREFIX_MSG + 'Restarting process by id ' + idup_id);
+      CLI.restartProcessById(idup_id);
     }
   });
 
 //
 // Reload process(es)
 //
-commander.command('reload <pm2_id|all>')
-  .description('reload all processes or a specific process pm2 id')
-  .action(function(pm2_id) {
+commander.command('reload <name|all>')
+  .description('reload all processes or by name')
+  .action(function(idup_id) {
     UX.processing.start();
-    CLI.reload(pm2_id);
+    if (idup_id == 'all')
+      CLI.reload('reloadProcessId');
+    else
+      CLI.reloadProcessName(idup_id, 'reloadProcessId');
   });
 
 //
-// Set pm2 to startup
+// Reload process(es)
+//
+commander.command('gracefulReload <name|all>')
+  .description('reload all processes or by name. Will send a "shutdown" message for graceful exit.')
+  .action(function(idup_id) {
+    UX.processing.start();
+    if (idup_id == 'all')
+      CLI.reload('softReloadProcessId');
+    else
+      CLI.reloadProcessName(idup_id, 'softReloadProcessId');
+  });
+
+//
+// Set idup to startup
 //
 commander.command('startup [platform]')
   .description('auto resurect process at startup. [platform] can be centos, default use update-rc.d')
@@ -247,12 +297,12 @@ if (process.argv.length == 2) {
 
 
 //
-// Wait Satan is connected to God to launch parsing
+// Wait Bridge is connected to God to launch parsing
 //
 // This message is triggered once the RPC Client is connected to the Daemon
-// in file Satan.js, method Satan.launchRPC
+// in file Bridge.js, method Bridge.launchRPC
 //
-process.on('satan:client:ready', function() {
+process.on('bridge:client:ready', function() {
   commander.parse(process.argv);
 });
 
@@ -268,15 +318,3 @@ process.on('satan:client:ready', function() {
     }
   });
 })();
-
-//
-// Harmony test
-//
-try {
-    var assert = require('assert')
-    , s = new Set();
-    s.add('a');
-    assert.ok(s.has('a'));
-    console.log('ES6 Harmony succesfully enabled');
-} catch(e) {
-}

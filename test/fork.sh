@@ -9,13 +9,13 @@
 
 # Yes, we have tests in bash. How mad science is that?
 
-# export PM2_RPC_PORT=4242
-# export PM2_PUB_PORT=4243
+# export IDUP_RPC_PORT=4242
+# export IDUP_PUB_PORT=4243
 
 
 node="`type -P node`"
 nodeVersion="`$node -v`"
-pm2="`type -P node` `pwd`/bin/pm2"
+idup="`type -P node` `pwd`/bin/idup"
 
 script="echo"
 
@@ -57,7 +57,7 @@ sleep 0.2
 }
 
 function should {
-    OUT=`$pm2 prettylist | grep -o "$2" | wc -l`
+    OUT=`$idup prettylist | grep -o "$2" | wc -l`
     [ $OUT -eq $3 ] || fail "$1"
     success "$1"
 }
@@ -65,40 +65,40 @@ function should {
 cd $file_path
 
 ########### Fork mode
-$pm2 kill
+$idup kill
 
-$pm2 start echo.js -x
+$idup start echo.js -x
 should 'should has forked app' 'fork' 1
 
-$pm2 restart echo.js
+$idup restart echo.js
 should 'should has forked app' 'restart_time: 1' 1
 
 ########### Fork mode
-$pm2 kill
+$idup kill
 
-$pm2 start bashscript.sh -x --interpreter bash
+$idup start bashscript.sh -x --interpreter bash
 should 'should has forked app' 'fork' 1
 
 ########### Auto Detective Interpreter In Fork mode
 
-$pm2 kill
+$idup kill
 
-$pm2 start echo.coffee -x --interpreter coffee
+$idup start echo.coffee -x --interpreter coffee
 should 'should has forked app' 'fork' 1
 
 ### Dump resurect should be ok
-$pm2 dump
+$idup dump
 
-$pm2 kill
+$idup kill
 
 #should 'should has forked app' 'fork' 0
 
-$pm2 resurrect
+$idup resurrect
 should 'should has forked app' 'fork' 1
 
 ## Delete
 
-$pm2 list
+$idup list
 
-$pm2 delete 0
+$idup delete 0
 should 'should has delete process' 'fork' 0

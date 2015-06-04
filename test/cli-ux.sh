@@ -2,7 +2,7 @@
 #!/usr/bin/env bash
 
 #
-# cli-test: Tests for god
+# cli-test: Tests for master
 #
 # (C) 2013 Unitech.io Inc.
 # MIT LICENSE
@@ -12,7 +12,7 @@
 
 
 node="`type -P node`"
-pm2="`type -P node` `pwd`/bin/pm2"
+idup="`type -P node` `pwd`/bin/idup"
 
 script="echo"
 
@@ -46,13 +46,13 @@ spec "You should have wrk benchmark in your /usr/bin"
 killall node
 
 cd $file_path
-$pm2 start cluster-pm2.json
-$pm2 start cluster-pm2.json -f
-$pm2 start cluster-pm2.json -f
-$pm2 start cluster-pm2.json -f
+$idup start cluster-idup.json
+$idup start cluster-idup.json -f
+$idup start cluster-idup.json -f
+$idup start cluster-idup.json -f
 spec "start cluster"
 
 wrk -c 500 -t 500 -d 8 http://localhost:8020 &> /dev/null &
-$pm2 monit
-$pm2 list
-$pm2 stop
+$idup monit
+$idup list
+$idup stop

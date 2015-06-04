@@ -1,21 +1,21 @@
 #!/bin/bash
 # chkconfig: 2345 98 02
 #
-# description: PM2 next gen process manager for Node.js
-# processname: pm2
+# description: IDUP next gen process manager for Node.js
+# processname: idup
 #
 ### BEGIN INIT INFO
-# Provides:          pm2
+# Provides:          idup
 # Required-Start:    
 # Required-Stop:
 # Default-Start:        2 3 4 5
 # Default-Stop:         0 1 6
-# Short-Description: PM2 init script
-# Description: PM2 is the next gen process manager for Node.js
+# Short-Description: IDUP init script
+# Description: IDUP is the next gen process manager for Node.js
 ### END INIT INFO
 
-NAME=pm2
-PM2=%PM2_PATH%
+NAME=idup
+IDUP=%IDUP_PATH%
 NODE=%NODE_PATH%
 USER=%USER%
 
@@ -27,13 +27,13 @@ super() {
  
 start() {
     echo "Starting $NAME"
-    super $NODE $PM2 resurrect
+    super $NODE $IDUP resurrect
 }
  
 stop() {
-    super $NODE $PM2 dump
-    super $NODE $PM2 delete all
-    super $NODE $PM2 kill
+    super $NODE $IDUP dump
+    super $NODE $IDUP delete all
+    super $NODE $IDUP kill
 }
  
 restart() {
@@ -44,12 +44,12 @@ restart() {
  
 reload() {
     echo "Reloading $NAME"
-    super $NODE $PM2 reload all
+    super $NODE $IDUP reload all
 }
  
 status() {
     echo "Status for $NAME:"
-    $NODE $PM2 list
+    $NODE $IDUP list
     RETVAL=$?
 }
  

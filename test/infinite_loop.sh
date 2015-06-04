@@ -11,12 +11,12 @@
 # Yes, we have tests in bash. How mad science is that?
 
 
-# export PM2_RPC_PORT=4242
-# export PM2_PUB_PORT=4243
+# export IDUP_RPC_PORT=4242
+# export IDUP_PUB_PORT=4243
 
 node="`type -P node`"
 nodeVersion="`$node -v`"
-pm2="`type -P node` `pwd`/bin/pm2"
+idup="`type -P node` `pwd`/bin/idup"
 
 script="echo"
 
@@ -60,7 +60,7 @@ sleep 1
 
 function should()
 {
-    OUT=`$pm2 prettylist | grep -o "$2" | wc -l`
+    OUT=`$idup prettylist | grep -o "$2" | wc -l`
     [ $OUT -eq $3 ] || fail "$1"
     success "$1"
 
@@ -71,13 +71,13 @@ cd $file_path
 
 echo "Starting infinite loop tests"
 
-$pm2 kill
+$idup kill
 
 
 
-$pm2 start killtoofast.js --name unstable-process
+$idup start killtoofast.js --name unstable-process
 
-echo -n "Waiting for process to restart too many times and pm2 to stop it"
+echo -n "Waiting for process to restart too many times and idup to stop it"
 
 for (( i = 0; i <= 50; i++ )); do
     sleep 0.1
@@ -85,18 +85,18 @@ for (( i = 0; i <= 50; i++ )); do
 done
 
 
-$pm2 list
+$idup list
 should 'should has stopped unstable process' 'errored' 1
 
-$pm2 kill
+$idup kill
 
 echo "Start infinite loop tests for restart|reload"
 
 cp killnotsofast.js killthen.js
 
-$pm2 start killthen.js --name killthen
+$idup start killthen.js --name killthen
 
-$pm2 list
+$idup list
 
 should 'should killthen alive for a long time' 'online' 1
 
@@ -107,21 +107,21 @@ cp killtoofast.js killthen.js
 
 echo "Restart with unstable process"
 
-$pm2 list
+$idup list
 
-$pm2 restart all  # pm2 reload should also work here
+$idup restart all  # idup reload should also work here
 
 for (( i = 0; i <= 50; i++ )); do
     sleep 0.1
     echo -n "."
 done
 
-$pm2 list
+$idup list
 
 should 'should has stoped unstable process' 'errored' 1
 
 rm killthen.js
 
-$pm2 list
+$idup list
 
-$pm2 kill
+$idup kill

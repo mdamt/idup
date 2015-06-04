@@ -14,7 +14,7 @@ describe('Monit', function() {
 
   var fixt1 = [{
     pid : 324,
-    pm2_env : {
+    idup_env : {
       pm_exec_path : 'asd',
       name : 'test',
       status : 'online'
@@ -27,7 +27,7 @@ describe('Monit', function() {
     }
   },{
     pid : 3245,
-    pm2_env : {
+    idup_env : {
       pm_exec_path : 'asd',
       name : 'test',
       status : 'online'
@@ -40,7 +40,7 @@ describe('Monit', function() {
     }
   },{
     pid : 3247,
-    pm2_env : {
+    idup_env : {
       pm_exec_path : 'asd',
       name : 'test',
       status : 'stopped'
@@ -55,7 +55,7 @@ describe('Monit', function() {
 
   var fixt2 = [{
     pid : 324,
-    pm2_env : {
+    idup_env : {
       pm_exec_path : 'asd',
       name : 'test',
       status : 'online'
@@ -68,7 +68,7 @@ describe('Monit', function() {
     }
   },{
     pid : 3245,
-    pm2_env : {
+    idup_env : {
       pm_exec_path : 'asd',
       name : 'test',
       status : 'stopped'
@@ -81,7 +81,7 @@ describe('Monit', function() {
     }
   },{
     pid : 3247,
-    pm2_env : {
+    idup_env : {
       pm_exec_path : 'asd',
       name : 'test',
       status : 'stopped'

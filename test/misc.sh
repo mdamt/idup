@@ -2,7 +2,7 @@
 #!/usr/bin/env bash
 
 #
-# cli-test: Tests for god
+# cli-test: Tests for master
 #
 # (C) 2013 Unitech.io Inc.
 # MIT LICENSE
@@ -10,13 +10,13 @@
 
 # Yes, we have tests in bash. How mad science is that?
 
-# export PM2_RPC_PORT=4242
-# export PM2_PUB_PORT=4243
+# export IDUP_RPC_PORT=4242
+# export IDUP_PUB_PORT=4243
 
 
 node="`type -P node`"
 nodeVersion="`$node -v`"
-pm2="`type -P node` `pwd`/bin/pm2"
+idup="`type -P node` `pwd`/bin/idup"
 
 script="echo"
 
@@ -58,7 +58,7 @@ sleep 0.2
 }
 
 function should {
-    OUT=`$pm2 prettylist | grep -o "$2" | wc -l`
+    OUT=`$idup prettylist | grep -o "$2" | wc -l`
     [ $OUT -eq $3 ] || fail "$1"
     success "$1"
 }
@@ -68,11 +68,11 @@ cd $file_path
 echo -e "\033[1mRunning tests:\033[0m"
 
 
-$pm2 kill
+$idup kill
 
-$pm2 start env.js
+$idup start env.js
 
-OUT_LOG=`$pm2 prettylist | grep -m 1 -E "pm_out_log_path:" | sed "s/.*'\([^']*\)',/\1/"`
+OUT_LOG=`$idup prettylist | grep -m 1 -E "pm_out_log_path:" | sed "s/.*'\([^']*\)',/\1/"`
 
 cat /dev/null > $OUT_LOG
 
@@ -87,9 +87,9 @@ else
     fail "environment defined ? wtf ?"
 fi
 
-$pm2 kill
+$idup kill
 
-$pm2 start env.json
+$idup start env.json
 
 cat /dev/null > $OUT_LOG
 
