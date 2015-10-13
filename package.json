@@ -2,10 +2,10 @@
   "name": "idup",
   "preferGlobal": "true",
   "version": "0.0.2",
-  "engines" : {
-    "node" : ">=0.8"
+  "engines": {
+    "node": ">=0.8"
   },
-  "homepage" : "https://github.com/mdamt/idup",
+  "homepage": "https://github.com/mdamt/idup",
   "description": "Modern CLI process manager for Node apps with a builtin load-balancer",
   "main": "index.js",
   "scripts": {
@@ -33,29 +33,30 @@
     "idup": "./bin/idup"
   },
   "dependencies": {
-    "commander"      : "2.8.1",
-    "cli-table"      : "0.2.0",
-    "pm2-multimeter" : "0.1.2",
-    "pm2-interface"  : "0.1.0",
-    "usage"          : "0.3.9",
-    "axon-rpc"       : "0.0.2",
-    "watch"          : "0.8.0",
-    "axon"           : "1.0.0",
-    "cron"           : "1.0.1",
-    "colors"         : "0.6.2",
-    "coffee-script"  : "*",
-    "eventemitter2"  : "0.4.13",
-    "debug"          : "*",
-    "async"          : "0.2.9"
+    "async": "0.2.9",
+    "axon": "1.0.0",
+    "axon-rpc": "0.0.2",
+    "cli-table": "0.2.0",
+    "coffee-script": "*",
+    "colors": "0.6.2",
+    "commander": "2.8.1",
+    "cron": "1.0.1",
+    "debug": "*",
+    "eventemitter2": "0.4.13",
+    "pidusage": "^0.1.1",
+    "pm2-interface": "0.1.0",
+    "pm2-multimeter": "0.1.2",
+    "usage": "0.3.9",
+    "watch": "0.8.0"
   },
   "devDependencies": {
-    "mocha"         : "1.x",
-    "should"        : "1.x",
-    "better-assert" : "*"
+    "mocha": "1.x",
+    "should": "1.x",
+    "better-assert": "*"
   },
   "repository": {
-    "type" : "git",
-    "url" : "git://github.com/mdamt/idup.git"
+    "type": "git",
+    "url": "git://github.com/mdamt/idup.git"
   },
   "license": "Apache v2"
 }
